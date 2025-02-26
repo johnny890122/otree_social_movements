@@ -1,11 +1,21 @@
 {{ block title }}
-    [Game Introduction Page]
+    Introduction
 {{ endblock }}
 
 {{ block content }}
-    <div>
-        Some Desciption 
-    </div>
+    <ol>
+        <li> 
+            The game consists of {{ num_rounds }} rounds. In each round, you will be placed in a network with other participants.
+        <li> 
+            Your goal is to decide whether or not to participate in a revolt based on available information. 
+        </li>
+        <li>
+            If the revolt succeeds, everyone who participated earns a reward.
+        </li>
+        <li>
+            If the revolt fails, participants incur a loss.
+        </li>
+    </ol>
     </br>
 
     {{next_button}}

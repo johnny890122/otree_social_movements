@@ -14,31 +14,61 @@ class Player(BasePlayer):
 class Group(BaseGroup):
     pass
 
+class WelcomePage(Page):
+    @staticmethod
+    def is_displayed(player):
+        if player.round_number == 1:
+            return True
+        return False
+
+    @staticmethod
+    def vars_for_template(player):
+        pass
+
+    @staticmethod
+    def before_next_page(player, timeout_happened):
+        pass
+
 class IntroPage(Page):
     @staticmethod
     def is_displayed(player):
-        pass
+        if player.round_number == 1:
+            return True
+        return False
 
     @staticmethod
     def vars_for_template(player):
-        pass
+        return {
+            'num_rounds': C.NUM_ROUNDS
+        }
 
-    @staticmethod
-    def before_next_page(player, timeout_happened):
-        pass
-
-class NetworksPage(Page):
+class RulePhase1Page(Page):
     @staticmethod
     def is_displayed(player):
-        pass
+        if player.round_number == 1:
+            return True
+        return False
 
+class RulePhase2Page(Page):
     @staticmethod
-    def vars_for_template(player):
-        pass
-
+    def is_displayed(player):
+        if player.round_number == 1:
+            return True
+        return False
+    
+class RulePhase3Page(Page):
     @staticmethod
-    def before_next_page(player, timeout_happened):
-        pass
+    def is_displayed(player):
+        if player.round_number == 1:
+            return True
+        return False
+    
+class RulePhase4Page(Page):
+    @staticmethod
+    def is_displayed(player):
+        if player.round_number == 1:
+            return True
+        return False
 
 class Phase1Page(Page):
     @staticmethod
@@ -92,4 +122,4 @@ class Phase4Page(Page):
     def before_next_page(player, timeout_happened):
         pass
 
-page_sequence = [IntroPage, NetworksPage, Phase1Page, Phase2Page, Phase3Page, Phase4Page]
+page_sequence = [WelcomePage, IntroPage, RulePhase1Page, RulePhase2Page, RulePhase3Page, RulePhase4Page]
