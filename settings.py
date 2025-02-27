@@ -9,9 +9,16 @@ ROOMS = [
 
 SESSION_CONFIGS = [
     dict(
-        name='social_movements',
+        name='social_movements_type_I',
         app_sequence=['social_movements'],
         num_demo_participants=4,
+        network="type_I", 
+    ),
+    dict(
+        name='social_movements_type_II',
+        app_sequence=['social_movements'],
+        num_demo_participants=4,
+        network="type_II", 
     ),
 ]
 
