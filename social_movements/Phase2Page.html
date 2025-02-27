@@ -1,12 +1,26 @@
 {{ block title }}
-    [Phase 2 Page]
+Round {{round_number}}  Phase 2: Viewing Network Information
 {{ endblock }}
 
 {{ block content }}
-    <div>
-        Some Desciption 
-    </div>
-    </br>
+    Players view
+    <ol>
+        <li> 
+            the threshold value of each network neighbor
+        </li>
+
+        <li> 
+            how these neighbors are connected to one another
+        </li>
+    </ol>
+
+    <div id="graph" style="border-color:black;border-width:1px;border-style:solid;"></div>
+    <script src="https://unpkg.com/force-graph"></script>
+    <script src="{% static 'render_network.js' %}"></script>
+    <script>
+        renderGraph({{nodes}}, {{links}}, {{me}});
+    </script>
+    <br
 
     {{next_button}}
 {{ endblock }}

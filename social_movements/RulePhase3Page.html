@@ -13,10 +13,19 @@ Phase 3: Making Your Decision
         </li>
     </ol>
 
-    <div>
-        [Insert Visual Aid Here]
+    Example: 
+    <div class="mb-3 _formfield">
+        <label class="col-form-label" for="id_test">
+            Join the revolt or not.
+        </label>
+        <div class="controls">
+            <select class="form-control" id="id_test" name="test" required>
+                <option value="" disabled selected>Some description</option>
+                <option value="Yes" > Yes </option>
+                <option value="No" disabled> No </option>
+            </select>
+        </div>
     </div>
-    <br
 
     {{next_button}}
 {{ endblock }}

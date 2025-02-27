@@ -1,12 +1,19 @@
 {{ block title }}
-    [Phase 3 Page]
+    Round {{round_number}} Phase 3: Making Your Decision
 {{ endblock }}
 
 {{ block content }}
-    <div>
-        Some Desciption 
-    </div>
-    </br>
+    <ol>
+        <li> 
+            Based on what you know, decide whether to join the revolt or not.
+        </li>
+
+        <li> 
+            Remember, you only succeed if enough people join! 
+        </li>
+    </ol>
+
+    {{ formfield 'revolt' }}
 
     {{next_button}}
 {{ endblock }}
