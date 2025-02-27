@@ -1,0 +1,16 @@
+{
+    "nodes": [
+      { "id": "A", "x": -50, "y": -50 },
+      { "id": "B", "x": 50, "y": -50 },
+      { "id": "C", "x": -50, "y": 50 },
+      { "id": "D", "x": 50, "y": 50 }
+    ],
+    "links": [
+      { "source": "A", "target": "B", "show": true },
+      { "source": "B", "target": "C", "show": false },
+      { "source": "C", "target": "D", "show": true },
+      { "source": "D", "target": "A", "show": false },
+      { "source": "C", "target": "A", "show": true },
+      { "source": "D", "target": "B", "show": true }
+    ]
+  }
