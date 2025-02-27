@@ -1,12 +1,19 @@
 {{ block title }}
-    [Phase 1 Page]
+  Round {{round_number}}  Phase 1: Setting Your Threshold
 {{ endblock }}
 
 {{ block content }}
-    <div>
-        Some Desciption 
-    </div>
-    </br>
+    <ol>
+        <li> 
+            You will be placed in a network with other participants. (這邊待確認)
+        </li>
+
+        <li> 
+            You need to decide how many participants (including yourself and your network neighbors) are needed for you to join the revolt. 
+        </li>
+    </ol>
+
+    {% formfield 'threshold' %}
 
     {{next_button}}
 {{ endblock }}

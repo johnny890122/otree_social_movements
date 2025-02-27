@@ -11,16 +11,27 @@ Phase 1: Setting Your Threshold
         <li> 
             You need to decide how many participants (including yourself and your network neighbors) are needed for you to join the revolt. 
         </li>
-        <li>
-            Example: If you set a threshold of 3, you will only join the revolt if at least 3 people (including yourself) participate. 
-        </li>
     </ol>
 
 
-    <div>
-        [Insert Visual Aid Here]
+
+    Example: If you set a threshold of 3, you will only join the revolt if at least 3 people (including yourself) participate. 
+    <div class="mb-3 _formfield">
+        <label class="col-form-label" for="id_test">
+            How many people (including self) does it take to motivate a person to participate in the revolt?
+        </label>
+        <div class="controls">
+            <select class="form-control" id="id_test" name="test" required>
+                <option value="" disabled selected>Choose a threshold</option>
+                <option value="1" disabled>1</option>
+                <option value="2" disabled>2</option>
+                <option value="3" >3</option>
+                <option value="4" disabled>4</option>
+            </select>
+        </div>
     </div>
-    <br
+    
+    
 
     {{next_button}}
 {{ endblock }}

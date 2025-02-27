@@ -19,10 +19,11 @@ Phase 4: Seeing the Results
         </li>
     </ol>
 
-    <div>
-        [Insert Visual Aid Here]
-    </div>
-    <br
+    <table id="outcomeTable"></table>
+    <script src="{% static 'render_outcome.js' %}"></script>
+    <script>
+        renderOutcome("${revolt_outcome}", {{num_participants}}, {{rewards}});
+    </script>
 
     {{next_button}}
 {{ endblock }}
