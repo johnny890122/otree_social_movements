@@ -1,27 +1,89 @@
 {{ block title }}
-Phase 2: Viewing Network Information
+Phase 2: Viewing Network Information and Making Your Decision
+
+{% load otree static %}
+<link rel="stylesheet" href="{% static 'styles.css' %}"/>
+
+<script src="https://unpkg.com/force-graph"></script>
+<script src="{% static 'render_network.js' %}"></script>
+<script src="{% static 'render_threshold.js' %}"></script>
 {{ endblock }}
 
 {{ block content }}
 
-Players view
+<strong>📋 Rules: </strong> <br>
     <ol>
         <li> 
-            the threshold value of each network neighbor
+            You will view (1) how these neighbors are connected to one another and (2) the threshold value of each network neighbor. 
         </li>
 
+        <li>
+            Based on what you know, decide whether to join the revolt or not.
+        </li>
+            
         <li> 
-            how these neighbors are connected to one another
+            Remember, you only succeed if enough people join! 
         </li>
     </ol>
 
-    <div id="graph" style="border-color:black;border-width:1px;border-style:solid;"></div>
-    <script src="https://unpkg.com/force-graph"></script>
-    <script src="{% static 'render_network.js' %}"></script>
-    <script>
-        renderGraph({{nodes}}, {{links}}, {{me}});
-    </script>
-    <br
+<div class="example-box-black"> 
+    <div id="tooltip" class="tooltip-block"></div>
+    <strong>🔍 Example:</strong> <br> 
+    <div>
+        You are Player {{me}}, shown in orange. You must decide: <strong>Will you join the revolt? </strong><br>
+    </div>
+
+    <br>
+    
+    <div style="display: flex; gap: 30px; height: 500px;">
+        <!-- Player info table -->
+        <div id="player-table-container" style="flex: 1; overflow: auto;">
+            <table border="1" cellpadding="5" cellspacing="0" class="tabular-data">
+                <thead>
+                    <tr>
+                        <th class="cell">👤 Player</th> <th class="cell">ℹ️ Threshold</th>
+                    </tr>
+                </thead>
+                <tbody id="player-table-body" style="vertical-align: top;">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+
+            <div>
+                <strong>👉 Give it a try:</strong> <br>
+                <label class="col-form-label" for="id_test">
+                    Join the revolt or not.
+                </label>
+                <div class="mb-3 _formfield">
+                    <div class="controls">
+                        <select class="form-control" id="id_test" name="test" required>
+                            <option value="" disabled selected> --- </option>
+                            {{ if join_revolt }}
+                                <option value="Yes" > Yes </option>
+                                <option value="No" disabled> No </option>
+                            {{else}}
+                                <option value="Yes" disabled> Yes </option>
+                                <option value="No"> No </option>
+                            {{endif}}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    
+        <!-- Graph -->
+        <div id="graph" style="flex: 2; border-style: solid; height: 100%;">
+            <!-- Populated by JS -->
+        </div>
+
+        <script>
+            RenderGraph({{nodes}}, {{links}}, {{me}});
+            RenderThreshold({{nodes}}, {{me}});
+        </script>
+    </div>
+
+</div>
 
     {{next_button}}
 {{ endblock }}

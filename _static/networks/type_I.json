@@ -1,9 +1,9 @@
 {
     "nodes": [
-      { "id": "A", "x": -50, "y": -50 },
-      { "id": "B", "x": 50, "y": -50 },
-      { "id": "C", "x": -50, "y": 50 },
-      { "id": "D", "x": 50, "y": 50 }
+      { "id": "A", "x": -50, "y": -50, "example_threshold": 4, "example_join_revolt": false},
+      { "id": "B", "x": 50, "y": -50, "example_threshold": 3, "example_join_revolt": false },
+      { "id": "C", "x": -50, "y": 50, "example_threshold": 2, "example_join_revolt": true },
+      { "id": "D", "x": 50, "y": 50, "example_threshold": 1, "example_join_revolt": true }
     ],
     "links": [
       { "source": "A", "target": "B", "show": true },
@@ -12,5 +12,6 @@
       { "source": "D", "target": "A", "show": false },
       { "source": "C", "target": "A", "show": true },
       { "source": "D", "target": "B", "show": true }
-    ]
+    ],
+    "revolt_success": false
   }

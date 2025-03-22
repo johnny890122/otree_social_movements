@@ -1,6 +1,6 @@
 [
-    { "participants": 1, "probSuccess": 20, "lossFailed": -80, "rewardSuccess": 100 },
-    { "participants": 2, "probSuccess": 40, "lossFailed": -60, "rewardSuccess": 100 },
-    { "participants": 3, "probSuccess": 60, "lossFailed": -40, "rewardSuccess": 100 },
-    { "participants": 4, "probSuccess": 80, "lossFailed": -20, "rewardSuccess": 100 }
+    { "participants": 1, "probSuccess": 20, "lossFailed": 80, "rewardSuccess": 100 },
+    { "participants": 2, "probSuccess": 40, "lossFailed": 60, "rewardSuccess": 100 },
+    { "participants": 3, "probSuccess": 60, "lossFailed": 40, "rewardSuccess": 100 },
+    { "participants": 4, "probSuccess": 80, "lossFailed": 20, "rewardSuccess": 100 }
 ]

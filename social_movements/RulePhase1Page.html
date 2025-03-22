@@ -1,11 +1,19 @@
 {{ block title }}
 Phase 1: Setting Your Threshold
+
+{% load otree static %}
+<link rel="stylesheet" href="{% static 'styles.css' %}"/>
 {{ endblock }}
 
 {{ block content }}
+    <strong>📋 Rules: </strong> <br>
     <ol>
+        <li>
+            There are 4 people(including yourself) in a network.
+        </li>
+
         <li> 
-            You will be placed in a network with other participants. (這邊待確認)
+            You will be placed in this network with other participants. 
         </li>
 
         <li> 
@@ -13,25 +21,31 @@ Phase 1: Setting Your Threshold
         </li>
     </ol>
 
-
-
-    Example: If you set a threshold of 3, you will only join the revolt if at least 3 people (including yourself) participate. 
-    <div class="mb-3 _formfield">
-        <label class="col-form-label" for="id_test">
-            How many people (including self) does it take to motivate a person to participate in the revolt?
-        </label>
-        <div class="controls">
-            <select class="form-control" id="id_test" name="test" required>
-                <option value="" disabled selected>Choose a threshold</option>
-                <option value="1" disabled>1</option>
-                <option value="2" disabled>2</option>
-                <option value="3" >3</option>
-                <option value="4" disabled>4</option>
-            </select>
+    <div class="example-box-black"> 
+        <strong>🔍 Example:</strong> <br> 
+        If you set a threshold of <strong>{{example_threshold}}</strong>, 
+        you will only join the revolt if <strong>at least {{example_threshold}} people (including yourself)</strong> 
+        participate.<br> 
+        <br>
+        <div class="mb-3 _formfield">
+            <strong>👉 Give it a try:</strong> <br> 
+            <label class="col-form-label" for="id_test">
+                How many people (including self) does it take to motivate a person to participate in the revolt?
+            </label>
+            <div class="controls">
+                <select class="form-control" id="id_test" name="test" required>
+                    <option value="" disabled selected>Choose a threshold</option>
+                    {% for i in range(1, 5) %}
+                        {{ if i == example_threshold }}
+                            <option value="{{ i }}">{{ i }}</option>
+                        {{else}}
+                            <option value="{{ i }}" disabled>{{ i }}</option>
+                        {{endif}}
+                    {% endfor %}
+                </select>
+            </div>
         </div>
     </div>
-    
-    
 
     {{next_button}}
 {{ endblock }}

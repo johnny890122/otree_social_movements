@@ -1,31 +1,67 @@
 {{ block title }}
-Phase 3: Making Your Decision
+Phase 3: Seeing the Results
+
+{% load otree static %}
+<link rel="stylesheet" href="{% static 'styles.css' %}"/>
 {{ endblock }}
 
 {{ block content }}
+    <strong>📋 Rules: </strong> <br>
+    The system announces the outcome:
     <ol>
         <li> 
-            Based on what you know, decide whether to join the revolt or not.
+            Whether the revolt succeeded or failed.
         </li>
 
         <li> 
-            Remember, you only succeed if enough people join! 
+            How many participants joined the revolt in total. 
+        </li>
+
+        <li> 
+            Your individual reward or loss.
         </li>
     </ol>
+    <div class="example-box-black">
+        <strong>🔍 Example:</strong> <br> 
 
-    Example: 
-    <div class="mb-3 _formfield">
-        <label class="col-form-label" for="id_test">
-            Join the revolt or not.
-        </label>
-        <div class="controls">
-            <select class="form-control" id="id_test" name="test" required>
-                <option value="" disabled selected>Some description</option>
-                <option value="Yes" > Yes </option>
-                <option value="No" disabled> No </option>
-            </select>
-        </div>
+        <table border="1" cellpadding="5" cellspacing="0" class="tabular-data">
+
+            <tr>
+                <th class="cell">Name</th>
+                <th class="cell">Value</td>
+            </tr>
+
+
+            <tr>
+                {{if revolt_success}}
+                    <th class="cell">✅ Revolt Outcome</th>
+                    <td class="cell">Succeed</td>
+                {{else}}
+                    <th class="cell">❌ Revolt Outcome</th>
+                    <td class="cell">Failed</td>
+                {{endif}}
+            </tr>
+            
+            <tr>
+                <th class="cell">👥 Total Participants</th>
+                <td class="cell">{{num_participants}}</td>
+            </tr>
+            <tr>
+                {{  if not join_revolt  }}
+                    <th class="cell">🚫 You didn't join
+                {{ elif revolt_success  }}
+                    <th class="cell"> 💰 Your reward
+                {{  else    }}
+                    <th class="cell"> 💸 You loss
+                {{endif}}
+
+                <td class="cell">{{rewards}}</td>
+            </tr>
+        </table>
+
     </div>
+
 
     {{next_button}}
 {{ endblock }}
+
