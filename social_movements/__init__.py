@@ -246,6 +246,6 @@ class ArrivalPage(WaitPage):
     def is_displayed(player):
         return player.round_number == 1
 
-# page_sequence = [ArrivalPage, WelcomePage, IntroPage, RulePhase1Page, RulePhase2Page, RulePhase3Page, RulePhase4Page, ArrivalPage]
-page_sequence = [RulePhase1Page, RulePhase2Page, RulePhase3Page]
+# page_sequence = [ArrivalPage,  RulePhase1Page, RulePhase2Page, RulePhase3Page, RulePhase4Page, ArrivalPage]
+page_sequence = [WelcomePage, IntroPage, RulePhase1Page, RulePhase2Page, RulePhase3Page]
 # page_sequence = [Phase1Page, Phase2Page, Phase3Page, Phase4Page]
