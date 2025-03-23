@@ -1,5 +1,6 @@
 from otree.api import BasePlayer, BaseSubsession, BaseConstants, BaseGroup, Page, WaitPage, models, widgets
 import json, itertools
+import social_movements.utils as utils
 class C(BaseConstants):
     NAME_IN_URL = 'css'
     PLAYERS_PER_GROUP = 4
@@ -22,16 +23,15 @@ class Player(BasePlayer):
     )
 
     endownment = models.CurrencyField(default=100)
+    my_label = models.StringField()
 
 class Group(BaseGroup):
     treatment = models.StringField()
 
 def creating_session(subsession: Subsession):
-    # treatment = itertools.cycle(C.NETWORKS)
-    # for group in subsession.get_groups():
-    #     if group.get_player_by_id(1).round_number == 1:
-    #         group.treatment = next(treatment)
-    pass
+    for group in subsession.get_groups():
+        for player in group.get_players():
+            player.my_label = C.MAPPING.get(player.id_in_group, "Unknown")
 
 class WelcomePage(Page):
     @staticmethod
@@ -39,14 +39,6 @@ class WelcomePage(Page):
         if player.round_number == 1:
             return True
         return False
-
-    @staticmethod
-    def vars_for_template(player):
-        pass
-
-    @staticmethod
-    def before_next_page(player, timeout_happened):
-        pass
 
 class IntroPage(Page):
     @staticmethod
@@ -70,18 +62,16 @@ class RulePhase1Page(Page):
     
     @staticmethod
     def vars_for_template(player):
-        network_file = f"_static/networks/{player.session.config['network']}.json"
-        with open(network_file, "r") as f:
-            data = json.load(f)
-
-        me = C.MAPPING.get(player.id_in_group, "Unknown")
-        for node in data["nodes"]:
-            if node["id"] == me:
+        networks_data = utils.load_network_data(player.session.config["network"])
+        rewards_data = utils.load_rewards_data()
+        for node in networks_data["nodes"]:
+            if node["id"] == player.my_label:
                 my_threshold = node["example_threshold"]
                 break
 
         return {
-            "example_threshold": my_threshold
+            "example_threshold": my_threshold,
+            "rewards": rewards_data,
         }
 
 class RulePhase2Page(Page):
@@ -93,22 +83,19 @@ class RulePhase2Page(Page):
     
     @staticmethod
     def vars_for_template(player):
-        network_file = f"_static/networks/{player.session.config['network']}.json"
-
-        with open(network_file, "r") as f:
-            data = json.load(f)
-
-        me = C.MAPPING.get(player.id_in_group, "Unknown")
-        for node in data["nodes"]:
-            if node["id"] == me:
+        network_data = utils.load_network_data(player.session.config["network"])
+        rewards_data = utils.load_rewards_data()
+        for node in network_data["nodes"]:
+            if node["id"] == player.my_label:
                 join_revolt = node["example_join_revolt"]
                 break
 
         return {
-            "me": json.dumps(me),
-            "nodes": json.dumps(data.get("nodes", [])),
-            "links": json.dumps(data.get("links", [])),
+            "me": json.dumps(player.my_label),
+            "nodes": json.dumps(network_data.get("nodes", [])),
+            "links": json.dumps(network_data.get("links", [])),
             "join_revolt": join_revolt,
+            "rewards": rewards_data,
         }
     
 class RulePhase3Page(Page):
@@ -120,17 +107,11 @@ class RulePhase3Page(Page):
     
     @staticmethod
     def vars_for_template(player):
-        rewards_file = "_static/rewards.json"
-        with open(rewards_file, "r") as f:
-            rewards_data = json.load(f)
-        
-        network_file = f"_static/networks/{player.session.config['network']}.json"
-        with open(network_file, "r") as f:
-            network_data = json.load(f)
-        
+        rewards_data = utils.load_rewards_data()
+        network_data = utils.load_network_data(player.session.config["network"])
         revolt_success = network_data.get("revolt_success", False)
-        num_participants = 0
-        
+
+        num_participants = 0   
         for node in network_data["nodes"]:
             if node["example_join_revolt"]:
                 num_participants += 1
@@ -141,9 +122,8 @@ class RulePhase3Page(Page):
                 loss_from_game = reward["lossFailed"]
                 break
 
-        me = C.MAPPING.get(player.id_in_group, "Unknown")
         for node in network_data["nodes"]:
-            if node["id"] == me:
+            if node["id"] == player.my_label:
                 join_revolt = node["example_join_revolt"]
                 break
 
@@ -159,7 +139,7 @@ class RulePhase3Page(Page):
             "rewards": rewards_data,
             "revolt_success": revolt_success,
             "num_participants": num_participants,
-            "rewards": my_payoff,
+            "payoff": my_payoff,
             "join_revolt": join_revolt,
         }
 
@@ -189,14 +169,11 @@ class Phase2Page(Page):
 
     @staticmethod
     def vars_for_template(player):
-        network_file = f"_static/networks/{player.session.config['network']}.json"
-
-        with open(network_file, "r") as f:
-            data = json.load(f)
+        data = utils.load_network_data(player.session.config["network"])
 
         return {
             "round_number": player.round_number,
-            "me": json.dumps(C.MAPPING.get(player.id_in_group, "Unknown")),
+            "me": json.dumps(player.my_label),
             "nodes": json.dumps(data.get("nodes", [])),
             "links": json.dumps(data.get("links", [])),
         }

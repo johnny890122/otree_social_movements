@@ -3,6 +3,7 @@ Phase 3: Seeing the Results
 
 {% load otree static %}
 <link rel="stylesheet" href="{% static 'styles.css' %}"/>
+<script src="{% static 'render_reward.js' %}"></script>
 {{ endblock }}
 
 {{ block content }}
@@ -21,44 +22,42 @@ Phase 3: Seeing the Results
             Your individual reward or loss.
         </li>
     </ol>
+
+    <strong>💰 Calculation of Reward and Loss: </strong> <br>
+    <table id="revoltTable" class="tabular-data-light"></table>
+    <script>
+        renderRewardsTable({{ rewards }});
+    </script>
+
     <div class="example-box-black">
         <strong>🔍 Example:</strong> <br> 
 
-        <table border="1" cellpadding="5" cellspacing="0" class="tabular-data">
-
-            <tr>
-                <th class="cell">Name</th>
-                <th class="cell">Value</td>
-            </tr>
-
-
+        <table border="1" cellpadding="5" cellspacing="0" class="tabular-data-dark">
             <tr>
                 {{if revolt_success}}
                     <th class="cell">✅ Revolt Outcome</th>
-                    <td class="cell">Succeed</td>
                 {{else}}
                     <th class="cell">❌ Revolt Outcome</th>
-                    <td class="cell">Failed</td>
                 {{endif}}
-            </tr>
-            
-            <tr>
+        
                 <th class="cell">👥 Total Participants</th>
-                <td class="cell">{{num_participants}}</td>
+        
+                {{  if not join_revolt  }}
+                    <th class="cell">🚫 You didn't join</th>
+                {{ elif revolt_success  }}
+                    <th class="cell">💰 Your reward</th>
+                {{  else    }}
+                    <th class="cell">💸 You loss</th>
+                {{endif}}
             </tr>
             <tr>
-                {{  if not join_revolt  }}
-                    <th class="cell">🚫 You didn't join
-                {{ elif revolt_success  }}
-                    <th class="cell"> 💰 Your reward
-                {{  else    }}
-                    <th class="cell"> 💸 You loss
-                {{endif}}
-
-                <td class="cell">{{rewards}}</td>
+                <td class="cell">
+                    {{if revolt_success}}Succeed{{else}}Failed{{endif}}
+                </td>
+                <td class="cell">{{num_participants}}</td>
+                <td class="cell">{{payoff}}</td>
             </tr>
         </table>
-
     </div>
 
 

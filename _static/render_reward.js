@@ -1,16 +1,28 @@
-function renderTable(data) {
-    const tbody = document.querySelector("#revoltTable tbody");
-    tbody.innerHTML = ""; // Clear existing rows
+function renderRewardsTable(data) {
+    const table = document.getElementById("revoltTable");
+    let thead = table.createTHead();
+    let tbody = table.createTBody();
 
+    thead.innerHTML = `
+        <tr>
+            <th class="cell">👥 # of participants</th> 
+            <th class="cell">🎲 Prob. of Success</th> 
+            <th class="cell">💸 Loss</th>
+            <th class="cell">💰 Reward</th>
+        </tr>
+    `;
+    
     data.forEach((row, index) => {
         let tr = document.createElement("tr");
-
+    
         tr.innerHTML = `
             <td>${row.participants}</td>
-            <td><input type="text" value="${row.probSuccess}" id="prob${index}"></td>
-            <td><input type="text" value="${row.lossFailed}" id="loss${index}"></td>
-            <td><input type="text" value="${row.rewardSuccess}" id="reward${index}"></td>
+            <td>${row.probSuccess}</td>
+            <td>-${row.lossFailed}</td>
+            <td>${row.rewardSuccess}</td>
         `;
+
+        tr.style.border = "2px solid white";
 
         tbody.appendChild(tr);
     });
