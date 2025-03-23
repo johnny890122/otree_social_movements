@@ -128,18 +128,19 @@ class RulePhase3Page(Page):
                 break
 
         if revolt_success and join_revolt:
-            my_payoff = reward_from_game
+            gain_or_loss = reward_from_game
         elif not revolt_success and join_revolt:
-            my_payoff = -loss_from_game
+            gain_or_loss = -loss_from_game
         else:
-            my_payoff = 0
+            gain_or_loss = 0
 
 
         return {
             "rewards": rewards_data,
             "revolt_success": revolt_success,
             "num_participants": num_participants,
-            "payoff": my_payoff,
+            "gain_or_loss": gain_or_loss,
+            "payoff": player.endownment + gain_or_loss,
             "join_revolt": join_revolt,
         }
 

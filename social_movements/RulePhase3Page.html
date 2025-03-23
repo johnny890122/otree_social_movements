@@ -35,27 +35,28 @@ Phase 3: Seeing the Results
         <table border="1" cellpadding="5" cellspacing="0" class="tabular-data-dark">
             <tr>
                 {{if revolt_success}}
-                    <th class="cell">✅ Revolt Outcome</th>
+                    <th class="cell-dark">✅ Revolt Outcome</th>
                 {{else}}
-                    <th class="cell">❌ Revolt Outcome</th>
+                    <th class="cell-dark">❌ Revolt Outcome</th>
                 {{endif}}
         
-                <th class="cell">👥 Total Participants</th>
-        
-                {{  if not join_revolt  }}
-                    <th class="cell">🚫 You didn't join</th>
-                {{ elif revolt_success  }}
-                    <th class="cell">💰 Your reward</th>
-                {{  else    }}
-                    <th class="cell">💸 You loss</th>
-                {{endif}}
+                <th class="cell-dark">👥 Total Participants</th>
+                <th class="cell-dark">🔁 Your gain/loss</th>
+                <th class="cell-dark">💰 Your payoff</td>
             </tr>
             <tr>
-                <td class="cell">
+                <td class="cell-dark">
                     {{if revolt_success}}Succeed{{else}}Failed{{endif}}
                 </td>
-                <td class="cell">{{num_participants}}</td>
-                <td class="cell">{{payoff}}</td>
+                <td class="cell-dark">{{num_participants}}</td>
+
+                {{  if not join_revolt  }}
+                    <td class="cell-dark">{{gain_or_loss}} (You didn't join.)</td>
+                {{  else    }}
+                    <td class="cell-dark">{{gain_or_loss}}</td>
+                {{endif}}
+
+                <td class="cell-dark">{{payoff}}</td>
             </tr>
         </table>
     </div>

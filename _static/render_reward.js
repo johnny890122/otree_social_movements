@@ -5,10 +5,10 @@ function renderRewardsTable(data) {
 
     thead.innerHTML = `
         <tr>
-            <th class="cell">👥 # of participants</th> 
-            <th class="cell">🎲 Prob. of Success</th> 
-            <th class="cell">💸 Loss</th>
-            <th class="cell">💰 Reward</th>
+            <th class="cell-light">👥 # of players</th> 
+            <th class="cell-light">🎲 Success Prob.</th> 
+            <th class="cell-light">💸 Loss</th>
+            <th class="cell-light">💰 Gain</th>
         </tr>
     `;
     
@@ -16,13 +16,12 @@ function renderRewardsTable(data) {
         let tr = document.createElement("tr");
     
         tr.innerHTML = `
-            <td>${row.participants}</td>
-            <td>${row.probSuccess}</td>
-            <td>-${row.lossFailed}</td>
-            <td>${row.rewardSuccess}</td>
+            <td class="cell-light">${row.participants}</td>
+            <td class="cell-light">${row.probSuccess}</td>
+            <td class="cell-light">-${row.lossFailed}</td>
+            <td class="cell-light">${row.rewardSuccess}</td>
         `;
-
-        tr.style.border = "2px solid white";
+        tr.className = "cell-light";
 
         tbody.appendChild(tr);
     });
