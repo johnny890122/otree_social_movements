@@ -3,6 +3,7 @@ Phase 1: Setting Your Threshold
 
 {% load otree static %}
 <link rel="stylesheet" href="{% static 'styles.css' %}"/>
+<script src="{% static 'render_reward.js' %}"></script>
 {{ endblock }}
 
 {{ block content }}
@@ -20,6 +21,12 @@ Phase 1: Setting Your Threshold
             You need to decide how many participants (including yourself and your network neighbors) are needed for you to join the revolt. 
         </li>
     </ol>
+
+    <strong>💰 Calculation of Reward and Loss: </strong> <br>
+    <table id="revoltTable" class="tabular-data-light"></table>
+    <script>
+        renderRewardsTable({{ rewards }});
+    </script>
 
     <div class="example-box-black"> 
         <strong>🔍 Example:</strong> <br> 

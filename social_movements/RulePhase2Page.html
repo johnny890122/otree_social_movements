@@ -7,6 +7,7 @@ Phase 2: Viewing Network Information and Making Your Decision
 <script src="https://unpkg.com/force-graph"></script>
 <script src="{% static 'render_network.js' %}"></script>
 <script src="{% static 'render_threshold.js' %}"></script>
+<script src="{% static 'render_reward.js' %}"></script>
 {{ endblock }}
 
 {{ block content }}
@@ -26,6 +27,12 @@ Phase 2: Viewing Network Information and Making Your Decision
         </li>
     </ol>
 
+<strong>💰 Calculation of Reward and Loss: </strong> <br>
+    <table id="revoltTable" class="tabular-data-light"></table>
+    <script>
+        renderRewardsTable({{ rewards }});
+    </script>
+
 <div class="example-box-black"> 
     <div id="tooltip" class="tooltip-block"></div>
     <strong>🔍 Example:</strong> <br> 
@@ -34,20 +41,30 @@ Phase 2: Viewing Network Information and Making Your Decision
     </div>
 
     <br>
-    
-    <div style="display: flex; gap: 30px; height: 500px;">
+    <div style="display: flex; flex-direction: column; gap: 30px; height: auto;">
         <!-- Player info table -->
-        <div id="player-table-container" style="flex: 1; overflow: auto;">
-            <table border="1" cellpadding="5" cellspacing="0" class="tabular-data">
+        <div id="player-table-container" style="flex: 1; overflow: auto; width: 100%;"></div>
+            <table border="1" cellpadding="5" cellspacing="0" class="tabular-data-light">
                 <thead>
                     <tr>
-                        <th class="cell">👤 Player</th> <th class="cell">ℹ️ Threshold</th>
+                        <th class="cell-dark">👤 Player</th> <th class="cell-dark">ℹ️ Threshold</th>
                     </tr>
                 </thead>
                 <tbody id="player-table-body" style="vertical-align: top;">
                     <!-- Populated by JS -->
                 </tbody>
             </table>
+
+
+            <!-- Graph -->
+            <div id="graph" style="flex: 2; border-style: solid;">
+                <!-- Populated by JS -->
+            </div>
+
+            <script>
+                RenderGraph({{nodes}}, {{links}}, {{me}});
+                RenderThreshold({{nodes}}, {{me}});
+            </script>
 
             <div>
                 <strong>👉 Give it a try:</strong> <br>
@@ -71,19 +88,9 @@ Phase 2: Viewing Network Information and Making Your Decision
             </div>
             
         </div>
-    
-        <!-- Graph -->
-        <div id="graph" style="flex: 2; border-style: solid; height: 100%;">
-            <!-- Populated by JS -->
-        </div>
 
-        <script>
-            RenderGraph({{nodes}}, {{links}}, {{me}});
-            RenderThreshold({{nodes}}, {{me}});
-        </script>
+
     </div>
-
-</div>
 
     {{next_button}}
 {{ endblock }}

@@ -1,25 +1,33 @@
 function RenderGraph(nodes, links, me) {
-    const NODE_R = 12;
-    const gData = {
-        nodes: nodes, links: links
-    }
-
-    const Graph = ForceGraph();
     const elem = document.getElementById('graph');
     const tooltip = document.getElementById('tooltip');
+
+    const rect = elem.getBoundingClientRect();
+    let width = rect.width;
+    let height = rect.height;
+    let NODE_R = Math.max(5, Math.min(width, height) / 30);
+    const Graph = ForceGraph();
+
+    nodes.forEach(node => {
+        node.x = node.x * width*3;
+        node.y = node.y * height*3;
+    });
+
+    const gData = { nodes: nodes, links: links };
+
     Graph(elem)
         .graphData(gData)
-        .width(500)
-        .height(500)
+        .width(width)
+        .height(height)
         .linkWidth(5)
         .nodeCanvasObject((node, ctx) => {
             ctx.lineWidth = 5;
             ctx.strokeStyle = 'white';
-            ctx.beginPath(); ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false); ctx.closePath();
+            ctx.beginPath(); 
+            ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false); ctx.closePath();
             ctx.stroke();
 
-            // Render node label
-            ctx.font = "8px Arial";
+            ctx.font = "7px Arial";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             
@@ -52,14 +60,11 @@ function RenderGraph(nodes, links, me) {
                 tooltip.style.display = 'none';
                 tooltip.innerHTML = '';
             }
-        });
+        })
       
     // Move tooltip with mouse
     elem.addEventListener('mousemove', e => {
         tooltip.style.left = (e.pageX + 20) + 'px';
         tooltip.style.top = (e.pageY + 20) + 'px';
     });
-
-    Graph.d3Force('link').distance(100);
-    Graph.d3Force('center', null);
 }
