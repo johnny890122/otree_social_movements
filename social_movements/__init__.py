@@ -1,5 +1,6 @@
 from otree.api import BasePlayer, BaseSubsession, BaseConstants, BaseGroup, Page, WaitPage, models, widgets
 import json, itertools
+import networkx as nx
 import social_movements.utils as utils
 class C(BaseConstants):
     NAME_IN_URL = 'css'
@@ -89,6 +90,19 @@ class RulePhase2Page(Page):
             if node["id"] == player.my_label:
                 join_revolt = node["example_join_revolt"]
                 break
+
+
+        G = nx.Graph()
+        G.add_nodes_from(
+            [node["id"] for node in network_data["nodes"]]
+        ) 
+        G.add_edges_from(
+            [(edge["source"], edge["target"]) for edge in network_data["links"] if edge["show"]]
+        )
+        my_neighbors = list(G.neighbors(player.my_label))
+        for node in network_data["nodes"]:
+            if node["id"] not in my_neighbors and node["id"] != player.my_label:
+                node["example_threshold"] = "Unknown (Not your neighbor)"
 
         return {
             "me": json.dumps(player.my_label),

@@ -36,7 +36,7 @@ function RenderGraph(nodes, links, me) {
                 ctx.fillStyle = "coral";
                 ctx.fill();
                 ctx.fillStyle = "black";
-                ctx.fillText(node.id + "/You", node.x, node.y);
+                ctx.fillText(node.id + "(You)", node.x, node.y);
             } else {
                 ctx.fillStyle = "lightblue";
                 ctx.fill();
