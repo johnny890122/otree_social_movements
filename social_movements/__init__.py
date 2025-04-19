@@ -29,7 +29,7 @@ class Player(BasePlayer):
 
 class Group(BaseGroup):
     network_config = models.StringField()
-    num_participants = models.IntegerField(default=-1)
+    num_participants = models.IntegerField()
 
 def creating_session(subsession: Subsession):
     config = subsession.session.config["network"]
