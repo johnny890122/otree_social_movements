@@ -71,22 +71,17 @@ class Phase1Page(Page):
             if node["id"] == player.my_label:
                 my_threshold = node["example_threshold"]
                 break
-        
-        is_practice = True if player.round_number == 1 else False
 
         return {
             "example_threshold": my_threshold,
             "rewards": rewards_data,
-            "is_practice": is_practice,
             "round_number": player.round_number - 1,
         }
 
 class RulePhase2Page(Page):
     @staticmethod
     def is_displayed(player):
-        if player.round_number == 1:
-            return True
-        return False
+        return True
     
     @staticmethod
     def vars_for_template(player):
@@ -94,7 +89,7 @@ class RulePhase2Page(Page):
         rewards_data = utils.load_rewards_data()
         for node in network_data["nodes"]:
             if node["id"] == player.my_label:
-                join_revolt = node["example_join_revolt"]
+                example_join_revolt = node["example_join_revolt"]
                 break
 
 
@@ -114,8 +109,9 @@ class RulePhase2Page(Page):
             "me": json.dumps(player.my_label),
             "nodes": json.dumps(network_data.get("nodes", [])),
             "links": json.dumps(network_data.get("links", [])),
-            "join_revolt": join_revolt,
+            "example_join_revolt": example_join_revolt,
             "rewards": rewards_data,
+            "round_number": player.round_number - 1,
         }
     
 class RulePhase3Page(Page):
@@ -162,22 +158,6 @@ class RulePhase3Page(Page):
             "gain_or_loss": gain_or_loss,
             "payoff": player.endownment + gain_or_loss,
             "join_revolt": join_revolt,
-        }
-
-class Phase2Page(Page):
-    @staticmethod
-    def is_displayed(player):
-        return True
-
-    @staticmethod
-    def vars_for_template(player):
-        data = utils.load_network_data(player.session.config["network"])
-
-        return {
-            "round_number": player.round_number,
-            "me": json.dumps(player.my_label),
-            "nodes": json.dumps(data.get("nodes", [])),
-            "links": json.dumps(data.get("links", [])),
         }
 
 class Phase3Page(Page):

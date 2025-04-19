@@ -1,5 +1,9 @@
 {{ block title }}
-Phase 2: Viewing Network Information and Making Your Decision
+{{ if round_number == 0 }}
+   (Practice) Phase 2: Viewing Network Information and Making Your Decision
+{{ else }}
+    (Round {{ round_number }}) Phase 2: Viewing Network Information and Making Your Decision
+{{ endif }}
 
 {% load otree static %}
 <link rel="stylesheet" href="{% static 'styles.css' %}"/>
@@ -33,9 +37,14 @@ Phase 2: Viewing Network Information and Making Your Decision
         renderRewardsTable({{ rewards }});
     </script>
 
-<div class="example-box-black"> 
+<div id="decision_block"> 
     <div id="tooltip" class="tooltip-block"></div>
-    <strong>🔍 Example:</strong> <br> 
+
+    {{if round_number == 0}}
+        <strong>🔍 Example:</strong> <br> 
+    {{else}}
+        <strong>🔍 Your Decision</strong> <br> 
+    {{endif}}
     <div>
         You are Player {{me}}, shown in orange. You must decide: <strong>Will you join the revolt? </strong><br>
     </div>
@@ -44,11 +53,9 @@ Phase 2: Viewing Network Information and Making Your Decision
     <div style="display: flex; flex-direction: column; gap: 30px; height: auto;">
         <!-- Player info table -->
         <div id="player-table-container" style="flex: 1; overflow: auto; width: 100%;"></div>
-            <table border="1" cellpadding="5" cellspacing="0" class="tabular-data-light">
-                <thead>
-                    <tr>
-                        <th class="cell-dark">👤 Player</th> <th class="cell-dark">ℹ️ Threshold</th>
-                    </tr>
+            <table id="threshold-table" border="1" cellpadding="5" cellspacing="0">
+                <thead id="player-table-header">
+                    <!-- Populated by JS -->
                 </thead>
                 <tbody id="player-table-body" style="vertical-align: top;">
                     <!-- Populated by JS -->
@@ -61,11 +68,6 @@ Phase 2: Viewing Network Information and Making Your Decision
                 <!-- Populated by JS -->
             </div>
 
-            <script>
-                RenderGraph({{nodes}}, {{links}}, {{me}});
-                RenderThreshold({{nodes}}, {{me}});
-            </script>
-
             <div>
                 <strong>👉 Give it a try:</strong> <br>
                 <label class="col-form-label" for="id_test">
@@ -75,7 +77,7 @@ Phase 2: Viewing Network Information and Making Your Decision
                     <div class="controls">
                         <select class="form-control" id="id_test" name="test" required>
                             <option value="" disabled selected> --- </option>
-                            {{ if join_revolt }}
+                            {{ if example_join_revolt }}
                                 <option value="Yes" > Yes </option>
                                 <option value="No" disabled> No </option>
                             {{else}}
@@ -91,6 +93,20 @@ Phase 2: Viewing Network Information and Making Your Decision
 
 
     </div>
+
+    <script>
+        const is_practice = {{ round_number }} == 0 ? true : false;
+
+        RenderGraph({{nodes}}, {{links}}, {{me}}, is_practice);
+        RenderThreshold({{nodes}}, {{me}}, is_practice);
+
+        const decisionBlock = document.getElementById("decision_block");
+        if (is_practice) {
+            decisionBlock.classList.add("example-box-black");
+        } else {
+            decisionBlock.classList.add("question-box");
+        }
+    </script>
 
     {{next_button}}
 {{ endblock }}

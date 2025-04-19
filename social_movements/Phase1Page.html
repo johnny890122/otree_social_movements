@@ -1,11 +1,24 @@
 {{ block title }}
-  Round {{round_number}}  Phase 1: Setting Your Threshold
+{{ if round_number == 0 }}
+   (Practice) Phase 1: Setting Your Threshold
+{{ else }}
+    (Round {{ round_number }}) Phase 1: Setting Your Threshold
+{{ endif }}
+
+{% load otree static %}
+<link rel="stylesheet" href="{% static 'styles.css' %}"/>
+<script src="{% static 'render_reward.js' %}"></script>
 {{ endblock }}
 
 {{ block content }}
+    <strong>📋 Rules: </strong> <br>
     <ol>
+        <li>
+            There are 4 people(including yourself) in a network.
+        </li>
+
         <li> 
-            You will be placed in a network with other participants. (這邊待確認)
+            You will be placed in this network with other participants. 
         </li>
 
         <li> 
@@ -13,7 +26,69 @@
         </li>
     </ol>
 
-    {% formfield 'threshold' %}
+    <strong>💰 Calculation of Reward and Loss: </strong> <br>
+    <table id="revoltTable" class="tabular-data-light"></table>
+    <script>
+        renderRewardsTable({{ rewards }});
+    </script>
+
+    {{ if round_number == 0 }}
+        <div class="example-box-black"> 
+            <strong>🔍 Example:</strong> <br> 
+            If you set a threshold of <strong>{{example_threshold}}</strong>, 
+            you will only join the revolt if <strong>at least {{example_threshold}} people (including yourself)</strong> 
+            participate.<br> 
+            <br>
+            <div class="mb-3 _formfield">
+                <strong>👉 Give it a try:</strong> <br> 
+                <label class="col-form-label" for="id_threshold" id="thresholdLabel"></label>
+                <div class="controls">
+                    <select class="form-control" id="id_threshold" name="threshold" required>
+                        <option value="" disabled selected>Choose a threshold</option>
+                        {% for i in range(1, 5) %}
+                            {{ if i == example_threshold }}
+                                <option value="{{ i }}">{{ i }}</option>
+                            {{else}}
+                                <option value="{{ i }}" disabled>{{ i }}</option>
+                            {{endif}}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+    {{ else }}
+        <div class="question-box">
+            <strong>🔍 Your Decision</strong> <br> 
+            If you set a threshold of <strong>n</strong>, 
+            you will only join the revolt if <strong>at least n people (including yourself)</strong> 
+            participate.<br> 
+            <br>
+
+            <div class="mb-3 _formfield">
+                <label class="col-form-label" for="id_threshold" id="thresholdLabel"></label>
+                <div class="controls">
+                    <select class="form-control" id="id_threshold" name="threshold" required>
+                        <option value="" disabled selected>Choose a threshold</option>
+                        {% for i in range(1, 5) %}
+                            <option value="{{ i }}">{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+        </div>
+
+    {{ endif}}
+
+    <script>
+        const threshold_label = "How many people (including self) does it take to motivate a person to participate in the revolt?"
+        document.getElementById("thresholdLabel").textContent = threshold_label;
+    </script>
+
 
     {{next_button}}
 {{ endblock }}
+
+
+
