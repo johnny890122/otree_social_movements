@@ -8,7 +8,8 @@ function RenderThreshold(nodes, me, is_practice) {
     const tableHeader = document.getElementById('player-table-header');
     tableHeader.innerHTML = ''; // Clear existing header
     const headerRow = document.createElement('tr');
-    ["👤 Player", "ℹ️ Threshold"].forEach(column => {
+    const columns = ["👤 Player", "ℹ️ Threshold"]
+    columns.forEach(column => {
         const th = document.createElement('th');
         th.className = cellClass;
         th.textContent = column;
