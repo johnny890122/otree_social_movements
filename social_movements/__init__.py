@@ -14,8 +14,8 @@ class Subsession(BaseSubsession):
 
 class Player(BasePlayer):
     threshold = models.IntegerField(
-        label="Please enter a threshold value",
-        choices=[1, 2, 3, 4],
+        label="How many people (including self) does it take to motivate a person to participate in the revolt?",
+        choices=[1, 2, 3, 4], 
     )
 
     revolt = models.BooleanField(
@@ -54,12 +54,14 @@ class IntroPage(Page):
             'num_rounds': C.NUM_ROUNDS
         }
 
-class RulePhase1Page(Page):
+class Phase1Page(Page):
+
+    form_model = 'player'
+    form_fields = ['threshold']
+
     @staticmethod
     def is_displayed(player):
-        if player.round_number == 1:
-            return True
-        return False
+        return True
     
     @staticmethod
     def vars_for_template(player):
@@ -69,10 +71,14 @@ class RulePhase1Page(Page):
             if node["id"] == player.my_label:
                 my_threshold = node["example_threshold"]
                 break
+        
+        is_practice = True if player.round_number == 1 else False
 
         return {
             "example_threshold": my_threshold,
             "rewards": rewards_data,
+            "is_practice": is_practice,
+            "round_number": player.round_number - 1,
         }
 
 class RulePhase2Page(Page):
@@ -157,25 +163,6 @@ class RulePhase3Page(Page):
             "payoff": player.endownment + gain_or_loss,
             "join_revolt": join_revolt,
         }
-
-class Phase1Page(Page):
-    form_model = 'player'
-    form_fields = ['threshold']
-
-    @staticmethod
-    def is_displayed(player):
-        return True
-
-    @staticmethod
-    def vars_for_template(player):
-        return {
-            "round_number": player.round_number
-        }
-
-    @staticmethod
-    def before_next_page(player, timeout_happened):
-        # TODO: Implement the logic for the threshold
-        pass
 
 class Phase2Page(Page):
     @staticmethod

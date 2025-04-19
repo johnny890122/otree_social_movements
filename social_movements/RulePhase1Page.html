@@ -1,5 +1,9 @@
 {{ block title }}
-Phase 1: Setting Your Threshold
+{{ if is_practice }}
+   (Practice) Phase 1: Setting Your Threshold
+{{ else }}
+    (Round {{ round_number }}) Phase 1: Setting Your Threshold
+{{ endif }}
 
 {% load otree static %}
 <link rel="stylesheet" href="{% static 'styles.css' %}"/>
@@ -28,31 +32,60 @@ Phase 1: Setting Your Threshold
         renderRewardsTable({{ rewards }});
     </script>
 
-    <div class="example-box-black"> 
-        <strong>🔍 Example:</strong> <br> 
-        If you set a threshold of <strong>{{example_threshold}}</strong>, 
-        you will only join the revolt if <strong>at least {{example_threshold}} people (including yourself)</strong> 
-        participate.<br> 
-        <br>
-        <div class="mb-3 _formfield">
-            <strong>👉 Give it a try:</strong> <br> 
-            <label class="col-form-label" for="id_test">
-                How many people (including self) does it take to motivate a person to participate in the revolt?
-            </label>
-            <div class="controls">
-                <select class="form-control" id="id_test" name="test" required>
-                    <option value="" disabled selected>Choose a threshold</option>
-                    {% for i in range(1, 5) %}
-                        {{ if i == example_threshold }}
-                            <option value="{{ i }}">{{ i }}</option>
-                        {{else}}
-                            <option value="{{ i }}" disabled>{{ i }}</option>
-                        {{endif}}
-                    {% endfor %}
-                </select>
+    {{ if is_practice }}
+        <div class="example-box-black"> 
+            <strong>🔍 Example:</strong> <br> 
+            If you set a threshold of <strong>{{example_threshold}}</strong>, 
+            you will only join the revolt if <strong>at least {{example_threshold}} people (including yourself)</strong> 
+            participate.<br> 
+            <br>
+            <div class="mb-3 _formfield">
+                <strong>👉 Give it a try:</strong> <br> 
+                <label class="col-form-label" for="id_threshold" id="thresholdLabel"></label>
+                <div class="controls">
+                    <select class="form-control" id="id_threshold" name="threshold" required>
+                        <option value="" disabled selected>Choose a threshold</option>
+                        {% for i in range(1, 5) %}
+                            {{ if i == example_threshold }}
+                                <option value="{{ i }}">{{ i }}</option>
+                            {{else}}
+                                <option value="{{ i }}" disabled>{{ i }}</option>
+                            {{endif}}
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
         </div>
-    </div>
+
+    {{ else }}
+        <div class="question-box">
+            <strong>🔍 Your Decision</strong> <br> 
+            If you set a threshold of <strong>n</strong>, 
+            you will only join the revolt if <strong>at least n people (including yourself)</strong> 
+            participate.<br> 
+            <br>
+
+            <div class="mb-3 _formfield">
+                <label class="col-form-label" for="id_threshold" id="thresholdLabel"></label>
+                <div class="controls">
+                    <select class="form-control" id="id_threshold" name="threshold" required>
+                        <option value="" disabled selected>Choose a threshold</option>
+                        {% for i in range(1, 5) %}
+                            <option value="{{ i }}">{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+        </div>
+
+    {{ endif}}
+
+    <script>
+        const threshold_label = "How many people (including self) does it take to motivate a person to participate in the revolt?"
+        document.getElementById("thresholdLabel").textContent = threshold_label;
+    </script>
+
 
     {{next_button}}
 {{ endblock }}
