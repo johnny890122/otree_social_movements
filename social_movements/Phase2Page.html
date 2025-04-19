@@ -75,20 +75,20 @@
                 </label>
                 <div class="mb-3 _formfield">
                     <div class="controls">
-                        <select class="form-control" id="id_revolt" name="revolt" required>
+                        <select class="form-control" id="id_revolt" name="join_revolt" required>
                             <option value="" disabled selected> --- </option>
 
                             {{ if round_number == 0 }}
                                 {{ if example_join_revolt }}
-                                    <option value="Yes" > Yes </option>
-                                    <option value="No" disabled> No </option>
+                                    <option value=1 > Yes </option>
+                                    <option value=0 disabled> No </option>
                                 {{else}}
-                                    <option value="Yes" disabled> Yes </option>
-                                    <option value="No"> No </option>
+                                    <option value=1 disabled> Yes </option>
+                                    <option value=0> No </option>
                                 {{endif}}
                             {{else}}
-                                <option value="Yes"> Yes </option>
-                                <option value="No"> No </option>
+                                <option value=1> Yes </option>
+                                <option value=0> No </option>
                             {{endif}}
 
 

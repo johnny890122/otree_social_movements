@@ -3,12 +3,11 @@ function renderOutcomeTable(revolt_success, num_participants, gain_or_loss, payo
     table.style.margin = "16px 0";
     let className = is_practice ? "cell-dark" : "cell-light";
     let revolt_text = revolt_success ? "Success" : "Failure";
-    let revolt_icon = revolt_success ? "✅" : "❌";
     let gan_loss_text = join_revolt ? `${gain_or_loss}`: `${gain_or_loss} (You didn't join.)`;
 
     table.innerHTML = `
         <tr>
-            <th class="${className}"> ${revolt_icon} Revolt Outcome</th>
+            <th class="${className}">📊 Revolt Outcome</th>
             <th class="${className}">👥 Total Participants</th>
             <th class="${className}">🔁 Your gain/loss</th>
             <th class="${className}">💰 Your payoff</th>
