@@ -8,6 +8,14 @@ ROOMS = [
 ]
 
 SESSION_CONFIGS = [
+
+    dict(
+        name='social_movements_type_mixed',
+        app_sequence=['social_movements'],
+        num_demo_participants=8,
+        network="mixed", 
+    ),
+
     dict(
         name='social_movements_type_I',
         app_sequence=['social_movements'],

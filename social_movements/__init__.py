@@ -5,7 +5,7 @@ import social_movements.utils as utils
 class C(BaseConstants):
     NAME_IN_URL = 'css'
     PLAYERS_PER_GROUP = 4
-    NUM_ROUNDS = 10
+    NUM_ROUNDS = 3
     NETWORKS = ["type_I", "type_II"]
     MAPPING = {i: chr(64 + i) for i in range(1, 5)}  # Dynamically generate 'A', 'B', 'C', 'D'
     INVERSE_MAPPING = {chr(64 + i): i for i in range(1, 5)}
@@ -18,19 +18,30 @@ class Player(BasePlayer):
         choices=[1, 2, 3, 4], 
     )
 
-    revolt = models.BooleanField(
+    join_revolt = models.BooleanField(
         label="Do you want to revolt?",
         choices=[True, False],
     )
 
     endownment = models.CurrencyField(default=100)
     my_label = models.StringField()
+    gain_or_loss = models.IntegerField()
 
 class Group(BaseGroup):
-    treatment = models.StringField()
+    network_config = models.StringField()
+    num_participants = models.IntegerField(default=-1)
 
 def creating_session(subsession: Subsession):
+    config = subsession.session.config["network"]
+    if config == "mixed":
+        network_type = iter(["type_I", "type_II"])
+    elif config == "type_I" or config == "type_II":
+        network_type = iter([config])
+    else:
+        raise ValueError("config incompatible")
+
     for group in subsession.get_groups():
+        group.network_config = next(network_type)
         for player in group.get_players():
             player.my_label = C.MAPPING.get(player.id_in_group, "Unknown")
 
@@ -72,7 +83,7 @@ class Phase1Page(Page):
     
     @staticmethod
     def vars_for_template(player):
-        networks_data = utils.load_network_data(player.session.config["network"])
+        networks_data = utils.load_network_data(player.group.network_config)
         rewards_data = utils.load_rewards_data()
         for node in networks_data["nodes"]:
             if node["id"] == player.my_label:
@@ -87,7 +98,7 @@ class Phase1Page(Page):
 
 class Phase2Page(Page):
     form_model = 'player'
-    form_fields = ['revolt']
+    form_fields = ['join_revolt']
 
     @staticmethod
     def is_displayed(player):
@@ -95,7 +106,7 @@ class Phase2Page(Page):
     
     @staticmethod
     def vars_for_template(player):
-        network_data = utils.load_network_data(player.session.config["network"])
+        network_data = utils.load_network_data(player.group.network_config)
         rewards_data = utils.load_rewards_data()
         for node in network_data["nodes"]:
             if node["id"] == player.my_label:
@@ -146,35 +157,54 @@ class Phase3Page(Page):
     @staticmethod
     def vars_for_template(player):
         rewards_data = utils.load_rewards_data()
-        num_participants = utils.num_revolt_participants(player)
+        player.group.num_participants = utils.num_revolt_participants(player)
         revolt_success = utils.revolt_success(player)
-        join_revolt = utils.join_revolt(player)
-        reward_from_game, loss_from_game = utils.get_reard_loss_from_game(num_participants)
-
+        join_revolt = player.join_revolt
+        reward_from_game, loss_from_game = utils.get_reard_loss_from_game(player.group.num_participants)
 
         if revolt_success and join_revolt:
-            gain_or_loss = reward_from_game
+            player.gain_or_loss = reward_from_game
         elif not revolt_success and join_revolt:
-            gain_or_loss = -loss_from_game
+            player.gain_or_loss = -loss_from_game
         else:
-            gain_or_loss = 0
-
+            player.gain_or_loss = 0
 
         return {
             "rewards": rewards_data,
             "revolt_success": json.dumps(revolt_success),
-            "num_participants": num_participants,
-            "gain_or_loss": gain_or_loss,
-            "payoff": int(player.endownment + gain_or_loss),
+            "num_participants": player.group.num_participants,
+            "gain_or_loss": player.gain_or_loss,
+            "payoff": int(player.endownment + player.gain_or_loss),
             "join_revolt": json.dumps(join_revolt),
             "round_number": player.round_number - 1,
         }
-
-
-class ArrivalPage(WaitPage):
-    # group_by_arrival_time = True
+    
+class WaitResultPage(WaitPage):
     @staticmethod
     def is_displayed(player):
-        return player.round_number == 1
+        if player.round_number == C.NUM_ROUNDS:
+            return True
+        return False
 
-page_sequence = [WelcomePage, IntroPage, Phase1Page, WaitThresholdPage, Phase2Page, WaitRevoltPage, Phase3Page]
+class ResultPgae(Page):
+    @staticmethod
+    def is_displayed(player):
+        if player.round_number == C.NUM_ROUNDS:
+            return True
+        return False
+
+    @staticmethod
+    def vars_for_template(player):
+        data = []
+        for i, p in enumerate(player.in_rounds(2, C.NUM_ROUNDS)):
+            data.append({ 
+                "round": i+1, 
+                "num": p.group.num_participants, 
+                "type": p.group.network_config, 
+            })
+
+        return {
+            "data": data
+        }
+
+page_sequence = [WelcomePage, IntroPage, Phase1Page, WaitThresholdPage, Phase2Page, WaitRevoltPage, Phase3Page, ResultPgae]
