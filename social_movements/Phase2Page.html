@@ -70,20 +70,28 @@
 
             <div>
                 <strong>👉 Give it a try:</strong> <br>
-                <label class="col-form-label" for="id_test">
+                <label class="col-form-label" for="id_revolt">
                     Join the revolt or not.
                 </label>
                 <div class="mb-3 _formfield">
                     <div class="controls">
-                        <select class="form-control" id="id_test" name="test" required>
+                        <select class="form-control" id="id_revolt" name="revolt" required>
                             <option value="" disabled selected> --- </option>
-                            {{ if example_join_revolt }}
-                                <option value="Yes" > Yes </option>
-                                <option value="No" disabled> No </option>
+
+                            {{ if round_number == 0 }}
+                                {{ if example_join_revolt }}
+                                    <option value="Yes" > Yes </option>
+                                    <option value="No" disabled> No </option>
+                                {{else}}
+                                    <option value="Yes" disabled> Yes </option>
+                                    <option value="No"> No </option>
+                                {{endif}}
                             {{else}}
-                                <option value="Yes" disabled> Yes </option>
+                                <option value="Yes"> Yes </option>
                                 <option value="No"> No </option>
                             {{endif}}
+
+
                         </select>
                     </div>
                 </div>

@@ -78,7 +78,10 @@ class Phase1Page(Page):
             "round_number": player.round_number - 1,
         }
 
-class RulePhase2Page(Page):
+class Phase2Page(Page):
+    form_model = 'player'
+    form_fields = ['revolt']
+
     @staticmethod
     def is_displayed(player):
         return True
@@ -114,12 +117,10 @@ class RulePhase2Page(Page):
             "round_number": player.round_number - 1,
         }
     
-class RulePhase3Page(Page):
+class Phase3Page(Page):
     @staticmethod
     def is_displayed(player):
-        if player.round_number == 1:
-            return True
-        return False
+        return True
     
     @staticmethod
     def vars_for_template(player):
@@ -153,50 +154,14 @@ class RulePhase3Page(Page):
 
         return {
             "rewards": rewards_data,
-            "revolt_success": revolt_success,
+            "revolt_success": json.dumps(revolt_success),
             "num_participants": num_participants,
             "gain_or_loss": gain_or_loss,
-            "payoff": player.endownment + gain_or_loss,
-            "join_revolt": join_revolt,
+            "payoff": int(player.endownment + gain_or_loss),
+            "join_revolt": json.dumps(join_revolt),
+            "round_number": player.round_number - 1,
         }
 
-class Phase3Page(Page):
-    form_model = 'player'
-    form_fields = ['revolt']
-
-    @staticmethod
-    def is_displayed(player):
-        return True
-
-    @staticmethod
-    def vars_for_template(player):
-        pass
-
-    @staticmethod
-    def before_next_page(player, timeout_happened):
-        pass
-        # TODO: Calculate the outecome here
-
-class Phase4Page(Page):
-    @staticmethod
-    def is_displayed(player):
-        return True
-
-    @staticmethod
-    def vars_for_template(player):
-        rewards_file = "_static/rewards.json"
-        with open(rewards_file, "r") as f:
-            data = json.load(f)
-        
-        return {
-            "rewards": data,
-
-            # TODO: Replace the example data
-            "round_number": player.round_number,
-            "revolt_outcome": json.dumps(True),
-            "num_participants": "3",
-            "rewards": 100,
-        }
 
 class ArrivalPage(WaitPage):
     # group_by_arrival_time = True

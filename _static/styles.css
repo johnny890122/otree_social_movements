@@ -34,6 +34,7 @@
   border-style: solid;
   table-layout: fixed; /* Ensures equal column width */
   word-wrap: break-word; /* Ensures text wraps within cells */
+  margin: 16px 0;
 }
 
 .tabular-data-light {
@@ -46,10 +47,13 @@
 
 .cell-dark {
   border: 2px solid white;
+  background-color: black;
+  color: #fff;
 }
 
 .cell-light {
   border: 2px solid black;
+  background-color: white;
 }
 
 #graph {
