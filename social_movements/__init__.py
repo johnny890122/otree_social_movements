@@ -173,11 +173,8 @@ class Phase3Page(Page):
 
 class ArrivalPage(WaitPage):
     # group_by_arrival_time = True
-
     @staticmethod
     def is_displayed(player):
         return player.round_number == 1
 
-# page_sequence = [ArrivalPage,  RulePhase1Page, RulePhase2Page, RulePhase3Page, RulePhase4Page, ArrivalPage]
-page_sequence = [WelcomePage, IntroPage, RulePhase1Page, RulePhase2Page, RulePhase3Page]
-# page_sequence = [Phase1Page, Phase2Page, Phase3Page, Phase4Page]
+page_sequence = [WelcomePage, IntroPage, Phase1Page, WaitThresholdPage, Phase2Page, WaitRevoltPage, Phase3Page]

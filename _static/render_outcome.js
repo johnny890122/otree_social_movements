@@ -2,7 +2,7 @@ function renderOutcomeTable(revolt_success, num_participants, gain_or_loss, payo
     let table = document.getElementById("outcome-table-container");
     table.style.margin = "16px 0";
     let className = is_practice ? "cell-dark" : "cell-light";
-    let revolt_text = revolt_success ? "Succeed" : "Failed";
+    let revolt_text = revolt_success ? "Success" : "Failure";
     let revolt_icon = revolt_success ? "✅" : "❌";
     let gan_loss_text = join_revolt ? `${gain_or_loss}`: `${gain_or_loss} (You didn't join.)`;
 
