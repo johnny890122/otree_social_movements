@@ -30,7 +30,7 @@ function RenderThreshold(nodes, me, is_practice) {
 
         // Threshold cell
         const thresholdCell = document.createElement('td');
-        thresholdCell.textContent = node.example_threshold;
+        thresholdCell.textContent = node.threshold;
         thresholdCell.className = cellClass;
         row.appendChild(thresholdCell);
 
