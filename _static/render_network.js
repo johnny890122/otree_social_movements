@@ -1,5 +1,6 @@
-function RenderGraph(nodes, links, me) {
+function RenderGraph(nodes, links, me, is_practice) {
     const elem = document.getElementById('graph');
+    elem.style,border = is_practice ? "2px solid white" : "2px solid black";
     const tooltip = document.getElementById('tooltip');
 
     const rect = elem.getBoundingClientRect();
@@ -15,19 +16,23 @@ function RenderGraph(nodes, links, me) {
 
     const gData = { nodes: nodes, links: links };
 
+    const nodeStrokeColor = is_practice ? 'white' : 'black';
+    const linkShowColor = is_practice ? 'white' : 'black';
+    const linkHideColor = is_practice ? 'black' : 'white';
+
     Graph(elem)
         .graphData(gData)
         .width(width)
         .height(height)
         .linkWidth(5)
         .nodeCanvasObject((node, ctx) => {
-            ctx.lineWidth = 5;
-            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = nodeStrokeColor;
             ctx.beginPath(); 
             ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false); ctx.closePath();
             ctx.stroke();
 
-            ctx.font = "7px Arial";
+            ctx.font = "6px Arial";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             
@@ -50,7 +55,7 @@ function RenderGraph(nodes, links, me) {
             ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false);
             ctx.fill();
         })
-        .linkColor((link) => link.show ? 'white' : 'black')
+        .linkColor((link) => link.show ? linkShowColor : linkHideColor)
         .onNodeHover(node => {
             if (node) {
                 tooltip.style.display = 'block';

@@ -1,19 +1,63 @@
 {{ block title }}
-    Round {{round_number}} Phase 3: Making Your Decision
+{{ if round_number == 0 }}
+   (Practice) Phase 3: Seeing the Results
+{{ else }}
+    (Round {{ round_number }}) Phase 3: Seeing the Results
+{{ endif }}
+
+{% load otree static %}
+<link rel="stylesheet" href="{% static 'styles.css' %}"/>
+<script src="{% static 'render_reward.js' %}"></script>
+<script src="{% static 'render_outcome.js' %}"></script>
 {{ endblock }}
 
 {{ block content }}
+    <strong>📋 Rules: </strong> <br>
+    The system announces the outcome:
     <ol>
         <li> 
-            Based on what you know, decide whether to join the revolt or not.
+            Whether the revolt succeeded or failed.
         </li>
 
         <li> 
-            Remember, you only succeed if enough people join! 
+            How many participants joined the revolt in total. 
+        </li>
+
+        <li> 
+            Your individual reward or loss.
         </li>
     </ol>
 
-    {{ formfield 'revolt' }}
+    <div id="outcome-block">
+        {{ if round_number == 0 }}
+            <strong>🔍 Example:</strong> <br> 
+        {{ else }}
+        <strong>🔍 Outcome:</strong> <br> 
+        {{ endif }}
+
+        <table id="outcome-table-container" border="1" cellpadding="5" cellspacing="0">
+             <!-- Populated by JS -->
+        </table>
+    </div>
+
+    <script>
+        const is_practice = {{ round_number }} == 0 ? true : false;
+        if (is_practice) {
+            document.getElementById("outcome-block").classList.add("example-box-black");
+        } 
+
+        // renderRewardsTable({{ rewards }});
+        renderOutcomeTable(
+            {{ revolt_success }},
+            {{ num_participants }},
+            {{ gain_or_loss }},
+            {{ payoff }},
+            {{ join_revolt }},
+            is_practice
+        )
+    </script>
+
 
     {{next_button}}
 {{ endblock }}
+

@@ -8,14 +8,14 @@ class C(BaseConstants):
     NUM_ROUNDS = 10
     NETWORKS = ["type_I", "type_II"]
     MAPPING = {i: chr(64 + i) for i in range(1, 5)}  # Dynamically generate 'A', 'B', 'C', 'D'
-
+    INVERSE_MAPPING = {chr(64 + i): i for i in range(1, 5)}
 class Subsession(BaseSubsession):
     pass
 
 class Player(BasePlayer):
     threshold = models.IntegerField(
-        label="Please enter a threshold value",
-        choices=[1, 2, 3, 4],
+        label="How many people (including self) does it take to motivate a person to participate in the revolt?",
+        choices=[1, 2, 3, 4], 
     )
 
     revolt = models.BooleanField(
@@ -54,12 +54,21 @@ class IntroPage(Page):
             'num_rounds': C.NUM_ROUNDS
         }
 
-class RulePhase1Page(Page):
+class WaitThresholdPage(WaitPage):
     @staticmethod
     def is_displayed(player):
         if player.round_number == 1:
-            return True
-        return False
+            return False
+        return True
+
+class Phase1Page(Page):
+
+    form_model = 'player'
+    form_fields = ['threshold']
+
+    @staticmethod
+    def is_displayed(player):
+        return True
     
     @staticmethod
     def vars_for_template(player):
@@ -73,14 +82,16 @@ class RulePhase1Page(Page):
         return {
             "example_threshold": my_threshold,
             "rewards": rewards_data,
+            "round_number": player.round_number - 1,
         }
 
-class RulePhase2Page(Page):
+class Phase2Page(Page):
+    form_model = 'player'
+    form_fields = ['revolt']
+
     @staticmethod
     def is_displayed(player):
-        if player.round_number == 1:
-            return True
-        return False
+        return True
     
     @staticmethod
     def vars_for_template(player):
@@ -88,9 +99,8 @@ class RulePhase2Page(Page):
         rewards_data = utils.load_rewards_data()
         for node in network_data["nodes"]:
             if node["id"] == player.my_label:
-                join_revolt = node["example_join_revolt"]
+                example_join_revolt = node["example_join_revolt"]
                 break
-
 
         G = nx.Graph()
         G.add_nodes_from(
@@ -100,46 +110,47 @@ class RulePhase2Page(Page):
             [(edge["source"], edge["target"]) for edge in network_data["links"] if edge["show"]]
         )
         my_neighbors = list(G.neighbors(player.my_label))
+
+        is_practice = True if player.round_number == 1 else False
         for node in network_data["nodes"]:
             if node["id"] not in my_neighbors and node["id"] != player.my_label:
-                node["example_threshold"] = "Unknown (Not your neighbor)"
+                node["threshold"] = "Unknown (Not your neighbor)"
+            else:
+                if is_practice:
+                    node["threshold"] = node["example_threshold"]
+                else:
+                    player_id = C.INVERSE_MAPPING[node["id"]]
+                    node["threshold"] = player.group.get_player_by_id(player_id).threshold
 
         return {
             "me": json.dumps(player.my_label),
             "nodes": json.dumps(network_data.get("nodes", [])),
             "links": json.dumps(network_data.get("links", [])),
-            "join_revolt": join_revolt,
+            "example_join_revolt": example_join_revolt,
             "rewards": rewards_data,
+            "round_number": player.round_number - 1,
         }
     
-class RulePhase3Page(Page):
+class WaitRevoltPage(WaitPage):
     @staticmethod
     def is_displayed(player):
         if player.round_number == 1:
-            return True
-        return False
+            return False
+        return True
+
+class Phase3Page(Page):
+    @staticmethod
+    def is_displayed(player):
+        return True
     
     @staticmethod
     def vars_for_template(player):
         rewards_data = utils.load_rewards_data()
-        network_data = utils.load_network_data(player.session.config["network"])
-        revolt_success = network_data.get("revolt_success", False)
+        num_participants = utils.num_revolt_participants(player)
+        revolt_success = utils.revolt_success(player)
+        join_revolt = utils.join_revolt(player)
+        reward_from_game, loss_from_game = utils.get_reard_loss_from_game(num_participants)
 
-        num_participants = 0   
-        for node in network_data["nodes"]:
-            if node["example_join_revolt"]:
-                num_participants += 1
-        
-        for reward in rewards_data:
-            if reward["participants"] == num_participants:
-                reward_from_game = reward["rewardSuccess"]
-                loss_from_game = reward["lossFailed"]
-                break
-
-        for node in network_data["nodes"]:
-            if node["id"] == player.my_label:
-                join_revolt = node["example_join_revolt"]
-                break
 
         if revolt_success and join_revolt:
             gain_or_loss = reward_from_game
@@ -151,85 +162,14 @@ class RulePhase3Page(Page):
 
         return {
             "rewards": rewards_data,
-            "revolt_success": revolt_success,
+            "revolt_success": json.dumps(revolt_success),
             "num_participants": num_participants,
             "gain_or_loss": gain_or_loss,
-            "payoff": player.endownment + gain_or_loss,
-            "join_revolt": join_revolt,
+            "payoff": int(player.endownment + gain_or_loss),
+            "join_revolt": json.dumps(join_revolt),
+            "round_number": player.round_number - 1,
         }
 
-class Phase1Page(Page):
-    form_model = 'player'
-    form_fields = ['threshold']
-
-    @staticmethod
-    def is_displayed(player):
-        return True
-
-    @staticmethod
-    def vars_for_template(player):
-        return {
-            "round_number": player.round_number
-        }
-
-    @staticmethod
-    def before_next_page(player, timeout_happened):
-        # TODO: Implement the logic for the threshold
-        pass
-
-class Phase2Page(Page):
-    @staticmethod
-    def is_displayed(player):
-        return True
-
-    @staticmethod
-    def vars_for_template(player):
-        data = utils.load_network_data(player.session.config["network"])
-
-        return {
-            "round_number": player.round_number,
-            "me": json.dumps(player.my_label),
-            "nodes": json.dumps(data.get("nodes", [])),
-            "links": json.dumps(data.get("links", [])),
-        }
-
-class Phase3Page(Page):
-    form_model = 'player'
-    form_fields = ['revolt']
-
-    @staticmethod
-    def is_displayed(player):
-        return True
-
-    @staticmethod
-    def vars_for_template(player):
-        pass
-
-    @staticmethod
-    def before_next_page(player, timeout_happened):
-        pass
-        # TODO: Calculate the outecome here
-
-class Phase4Page(Page):
-    @staticmethod
-    def is_displayed(player):
-        return True
-
-    @staticmethod
-    def vars_for_template(player):
-        rewards_file = "_static/rewards.json"
-        with open(rewards_file, "r") as f:
-            data = json.load(f)
-        
-        return {
-            "rewards": data,
-
-            # TODO: Replace the example data
-            "round_number": player.round_number,
-            "revolt_outcome": json.dumps(True),
-            "num_participants": "3",
-            "rewards": 100,
-        }
 
 class ArrivalPage(WaitPage):
     # group_by_arrival_time = True

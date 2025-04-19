@@ -1,26 +1,120 @@
 {{ block title }}
-Round {{round_number}}  Phase 2: Viewing Network Information
+{{ if round_number == 0 }}
+   (Practice) Phase 2: Viewing Network Information and Making Your Decision
+{{ else }}
+    (Round {{ round_number }}) Phase 2: Viewing Network Information and Making Your Decision
+{{ endif }}
+
+{% load otree static %}
+<link rel="stylesheet" href="{% static 'styles.css' %}"/>
+
+<script src="https://unpkg.com/force-graph"></script>
+<script src="{% static 'render_network.js' %}"></script>
+<script src="{% static 'render_threshold.js' %}"></script>
+<script src="{% static 'render_reward.js' %}"></script>
 {{ endblock }}
 
 {{ block content }}
-    Players view
+
+<strong>📋 Rules: </strong> <br>
     <ol>
         <li> 
-            the threshold value of each network neighbor
+            You will view (1) how these neighbors are connected to one another and (2) the threshold value of each network neighbor. 
         </li>
 
+        <li>
+            Based on what you know, decide whether to join the revolt or not.
+        </li>
+            
         <li> 
-            how these neighbors are connected to one another
+            Remember, you only succeed if enough people join! 
         </li>
     </ol>
 
-    <div id="graph" style="border-color:black;border-width:1px;border-style:solid;"></div>
-    <script src="https://unpkg.com/force-graph"></script>
-    <script src="{% static 'render_network.js' %}"></script>
+<strong>💰 Calculation of Reward and Loss: </strong> <br>
+    <table id="revoltTable" class="tabular-data-light"></table>
     <script>
-        renderGraph({{nodes}}, {{links}}, {{me}});
+        renderRewardsTable({{ rewards }});
     </script>
-    <br
+
+<div id="decision_block"> 
+    <div id="tooltip" class="tooltip-block"></div>
+
+    {{if round_number == 0}}
+        <strong>🔍 Example:</strong> <br> 
+    {{else}}
+        <strong>🔍 Your Decision</strong> <br> 
+    {{endif}}
+    <div>
+        You are Player {{me}}, shown in orange. You must decide: <strong>Will you join the revolt? </strong><br>
+    </div>
+
+    <br>
+    <div style="display: flex; flex-direction: column; gap: 30px; height: auto;">
+        <!-- Player info table -->
+        <div id="player-table-container" style="flex: 1; overflow: auto; width: 100%;"></div>
+            <table id="threshold-table" border="1" cellpadding="5" cellspacing="0">
+                <thead id="player-table-header">
+                    <!-- Populated by JS -->
+                </thead>
+                <tbody id="player-table-body" style="vertical-align: top;">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+
+
+            <!-- Graph -->
+            <div id="graph" style="flex: 2; border-style: solid;">
+                <!-- Populated by JS -->
+            </div>
+
+            <div>
+                <strong>👉 Give it a try:</strong> <br>
+                <label class="col-form-label" for="id_revolt">
+                    Join the revolt or not.
+                </label>
+                <div class="mb-3 _formfield">
+                    <div class="controls">
+                        <select class="form-control" id="id_revolt" name="revolt" required>
+                            <option value="" disabled selected> --- </option>
+
+                            {{ if round_number == 0 }}
+                                {{ if example_join_revolt }}
+                                    <option value="Yes" > Yes </option>
+                                    <option value="No" disabled> No </option>
+                                {{else}}
+                                    <option value="Yes" disabled> Yes </option>
+                                    <option value="No"> No </option>
+                                {{endif}}
+                            {{else}}
+                                <option value="Yes"> Yes </option>
+                                <option value="No"> No </option>
+                            {{endif}}
+
+
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+
+    </div>
+
+    <script>
+        const is_practice = {{ round_number }} == 0 ? true : false;
+
+        RenderGraph({{nodes}}, {{links}}, {{me}}, is_practice);
+        RenderThreshold({{nodes}}, {{me}}, is_practice);
+
+        const decisionBlock = document.getElementById("decision_block");
+        if (is_practice) {
+            decisionBlock.classList.add("example-box-black");
+        } else {
+            decisionBlock.classList.add("question-box");
+        }
+    </script>
 
     {{next_button}}
 {{ endblock }}
