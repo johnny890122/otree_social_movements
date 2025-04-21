@@ -10,7 +10,7 @@ function renderOutcomeTable(revolt_success, num_participants, gain_or_loss, payo
             <th class="${className}">📊 Revolt Outcome</th>
             <th class="${className}">👥 Total Participants</th>
             <th class="${className}">🔁 Your gain/loss</th>
-            <th class="${className}">💰 Your payoff</th>
+            <th class="${className}">💰 Your balance of payoff</th>
         </tr>
 
         <tr>

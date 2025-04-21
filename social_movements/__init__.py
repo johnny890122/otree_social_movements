@@ -9,6 +9,7 @@ class C(BaseConstants):
     NETWORKS = ["type_I", "type_II"]
     MAPPING = {i: chr(64 + i) for i in range(1, 5)}  # Dynamically generate 'A', 'B', 'C', 'D'
     INVERSE_MAPPING = {chr(64 + i): i for i in range(1, 5)}
+    ENDOWNMENT = 100
 class Subsession(BaseSubsession):
     pass
 
@@ -23,7 +24,7 @@ class Player(BasePlayer):
         choices=[True, False],
     )
 
-    endownment = models.CurrencyField(default=100)
+    endownment = models.CurrencyField(default=C.ENDOWNMENT)
     my_label = models.StringField()
     gain_or_loss = models.IntegerField()
 
@@ -62,7 +63,7 @@ class IntroPage(Page):
     @staticmethod
     def vars_for_template(player):
         return {
-            'num_rounds': C.NUM_ROUNDS
+            'endownment': player.endownment
         }
 
 class WaitThresholdPage(WaitPage):
