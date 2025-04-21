@@ -1,6 +1,6 @@
 function RenderGraph(nodes, links, me, is_practice) {
     const elem = document.getElementById('graph');
-    elem.style,border = is_practice ? "2px solid white" : "2px solid black";
+    elem.style.border = is_practice ? "2px solid white" : "2px solid black";
     const tooltip = document.getElementById('tooltip');
 
     const rect = elem.getBoundingClientRect();
