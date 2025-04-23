@@ -5,7 +5,7 @@ import social_movements.utils as utils
 class C(BaseConstants):
     NAME_IN_URL = 'css'
     PLAYERS_PER_GROUP = 4
-    NUM_ROUNDS = 10
+    NUM_ROUNDS = 8
     NETWORKS = ["type_I", "type_II"]
     MAPPING = {i: chr(64 + i) for i in range(1, 5)}  # Dynamically generate 'A', 'B', 'C', 'D'
     INVERSE_MAPPING = {chr(64 + i): i for i in range(1, 5)}
